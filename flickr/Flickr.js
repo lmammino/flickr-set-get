@@ -9,6 +9,7 @@ var EventEmitter = require('events').EventEmitter
   , url = require('url');
 
 // TODO add support for output folder
+// TODO add support to skip already downloaded files
 function Flickr(apiKey, parallelRequests) {
     var self = this;
 

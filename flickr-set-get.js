@@ -5,6 +5,7 @@
 var cli = require('cli')
   , flickr = require('./flickr/Flickr.js');
 
+//TODO use global apikey in user profile directory
 cli.parse({
     apiKey:   ['k', 'The flickr api key', 'string', require('./.apikey.js')],
     parallelRequests:   ['p', 'The number of parallel requests', 'number', 5]
