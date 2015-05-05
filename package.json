@@ -1,0 +1,22 @@
+{
+  "name": "flickr-set-get",
+  "version": "0.0.0",
+  "description": "A simple command line app to download photos from a flickr set",
+  "main": "flickr/Flickr.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "flickr",
+    "api",
+    "photos",
+    "download"
+  ],
+  "author": "Luciano Mammino",
+  "license": "MIT",
+  "dependencies": {
+    "async": "^0.9.0",
+    "cli": "^0.6.6",
+    "request": "^2.55.0"
+  }
+}
