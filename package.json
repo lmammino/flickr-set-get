@@ -2,6 +2,7 @@
   "name": "flickr-set-get",
   "version": "0.0.0",
   "description": "A simple command line app to download photos from a flickr set",
+  "repository": "https://github.com/lmammino/flickr-set-get",
   "main": "flickr/Flickr.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -20,6 +21,8 @@
     "request": "^2.55.0"
   },
   "devDependencies": {
-    "jscs": "^1.13.1"
+    "chai": "^2.3.0",
+    "jscs": "^1.13.1",
+    "mocha": "^2.2.4"
   }
 }
