@@ -31,6 +31,6 @@ cli.main(function(args, options) {
     cli.ok('All done.');
   });
 
-  api.getSet(args[0], args[1]);
+  api.downloadSet(args[0], args[1]);
 });
 

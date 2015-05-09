@@ -24,4 +24,13 @@ describe('Flickr', function() {
 
   });
 
+  describe('#downloadSet()', function() {
+
+    it('should download a set');
+    it('should stop on invalid setId');
+    it('should stop on invalid username');
+    it('should skip not downloadable photos');
+
+  });
+
 });
