@@ -15,11 +15,11 @@ describe('Flickr', function() {
       f.apiKey.should.equal('apiKey');
     });
 
-    it('should be initialized with an optional parallelRequest property', function() {
+    it('should be initialized with an optional concurrency property', function() {
       var f = new Flickr('apiKey');
-      f.parallelRequests.should.be.a('number');
+      f.concurrency.should.be.a('number');
       f = new Flickr('apiKey', 2);
-      f.parallelRequests.should.equal(2);
+      f.concurrency.should.equal(2);
     });
 
   });

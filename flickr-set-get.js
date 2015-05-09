@@ -8,11 +8,11 @@ var Flickr = require('./lib/Flickr.js');
 //TODO use global apikey in user profile directory
 cli.parse({
   apiKey:   ['k', 'The flickr api key', 'string', require('./.apikey.js')],
-  parallelRequests:   ['p', 'The number of parallel requests', 'number', 5]
+  concurrency:   ['c', 'The number of concurrent requests', 'number', 10]
 });
 
 cli.main(function(args, options) {
-  var api = new Flickr(options.apiKey, options.parallelRequests);
+  var api = new Flickr(options.apiKey, options.concurrency);
   var numPhotos = null;
   var numDownloaded = 0;
 
