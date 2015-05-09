@@ -1,13 +1,31 @@
 {
   "name": "flickr-set-get",
-  "version": "0.0.0",
   "description": "A simple command line app to download photos from a flickr set",
-  "repository": "https://github.com/lmammino/flickr-set-get",
-  "main": "flickr/Flickr.js",
+  "tags": [
+    "flickr",
+    "photo",
+    "set",
+    "download",
+    "command line",
+    "cli"
+  ],
+  "version": "0.0.0",
+  "author": {
+    "name": "Luciano Mammino",
+    "email": "lucianomammino@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lmammino/flickr-set-get"
+  },
+  "bugs": {
+    "url": "https://github.com/lmammino/flickr-set-get/issues"
+  },
+  "main": "lib/Flickr.js",
   "scripts": {
     "test": "npm run-script jscs && npm run-script mocha",
-    "jscs": "./node_modules/.bin/jscs lib/ test/",
-    "mocha": "./node_modules/.bin/mocha test/"
+    "jscs": "./node_modules/.bin/jscs lib/ tests/",
+    "mocha": "./node_modules/.bin/mocha tests/"
   },
   "keywords": [
     "flickr",
@@ -15,8 +33,10 @@
     "photos",
     "download"
   ],
-  "author": "Luciano Mammino",
   "license": "MIT",
+  "engines": {
+    "node": ">=0.8.0"
+  },
   "dependencies": {
     "async": "^0.9.0",
     "cli": "^0.6.6",
@@ -25,6 +45,7 @@
   "devDependencies": {
     "chai": "^2.3.0",
     "jscs": "^1.13.1",
-    "mocha": "^2.2.4"
+    "mocha": "^2.2.4",
+    "nock": "^1.9.0"
   }
 }

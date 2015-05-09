@@ -8,7 +8,7 @@ chai.should();
 
 describe('apiUrlBuilder', function() {
 
-  describe('#apiUrlBuilder', function() {
+  describe('#apiUrlBuilder()', function() {
 
     var apiKey = 'apiKey';
 

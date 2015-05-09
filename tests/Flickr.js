@@ -8,7 +8,7 @@ chai.should();
 
 describe('Flickr', function() {
 
-  describe('#Flickr', function() {
+  describe('#Flickr()', function() {
 
     it('should be initialized with an apiKey', function() {
       var f = new Flickr('apiKey');
