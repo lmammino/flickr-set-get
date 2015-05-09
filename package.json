@@ -5,7 +5,8 @@
   "repository": "https://github.com/lmammino/flickr-set-get",
   "main": "flickr/Flickr.js",
   "scripts": {
-    "test": "npm run-script mocha",
+    "test": "npm run-script jscs && npm run-script mocha",
+    "jscs": "./node_modules/.bin/jscs lib/ test/",
     "mocha": "./node_modules/.bin/mocha test/"
   },
   "keywords": [
