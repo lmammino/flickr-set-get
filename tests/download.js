@@ -21,7 +21,7 @@ describe('download', function() {
         .reply(200, fileContent)
       ;
 
-      download('http://somedomain.com/somefile.txt', dest, function onDownloadFinished(err, data) {
+      var stream = download('http://somedomain.com/somefile.txt', dest, function onDownloadFinished(err, data) {
         // tests whether the file has been correctly renamed and has the correct content
         chai.assert(fs.existsSync(dest));
         var content = fs.readFileSync(dest, {encoding:'utf8'});
@@ -30,7 +30,12 @@ describe('download', function() {
       });
 
       // Tests if the temp file has been created
-      chai.assert(fs.existsSync(tempDest));
+      var testHandler = function() {
+        chai.assert(fs.existsSync(tempDest));
+        stream.removeListener('data', testHandler);
+      };
+
+      stream.on('data', testHandler);
     });
 
   });
