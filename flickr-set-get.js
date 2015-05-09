@@ -3,7 +3,7 @@
 'use strict';
 
 var cli = require('cli');
-var Flickr = require('./flickr/Flickr.js');
+var Flickr = require('./lib/Flickr.js');
 
 //TODO use global apikey in user profile directory
 cli.parse({
