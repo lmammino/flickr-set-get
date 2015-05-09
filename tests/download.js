@@ -18,7 +18,6 @@ describe('download', function() {
 
       nock('http://somedomain.com')
         .get('/somefile.txt')
-        .delay(1)
         .reply(200, fileContent)
       ;
 
