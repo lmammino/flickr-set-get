@@ -84,6 +84,11 @@ function run(apiKey) {
     cli.ok('All done.');
   });
 
+  api.on('error', function onError(error) {
+    cli.error(error);
+    exit(1);
+  });
+
   api.downloadSet(setIdValue, userIdValue);
 }
 

@@ -1,0 +1,39 @@
+{
+  "photoset":{
+    "id":"someid",
+    "primary":"someprimary",
+    "owner":"someid",
+    "ownername":"somename",
+    "photo":[
+      {
+        "id":"photo4_id",
+        "secret":"photo4_secret",
+        "server":"someserver",
+        "farm":9,
+        "title":"photo4",
+        "isprimary":"0",
+        "ispublic":1,
+        "isfriend":0,
+        "isfamily":0
+      },
+      {
+        "id":"photo5_id",
+        "secret":"photo5_secret",
+        "server":"someserver",
+        "farm":9,
+        "title":"photo5",
+        "isprimary":"0",
+        "ispublic":1,
+        "isfriend":0,
+        "isfamily":0
+      }
+    ],
+    "page":"2",
+    "per_page":3,
+    "perpage":3,
+    "pages":2,
+    "total":"5",
+    "title":"Example set"
+  },
+  "stat":"ok"
+}
