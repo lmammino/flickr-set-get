@@ -2,17 +2,50 @@
 
 'use strict';
 
+var VERSION = '0.0.0';
+
+var program = require('commander');
+var prompt = require('prompt');
 var cli = require('cli');
+var fs = require('fs');
 var Flickr = require('./lib/Flickr.js');
 
-//TODO use global apikey in user profile directory
-cli.parse({
-  apiKey:   ['k', 'The flickr api key', 'string', require('./.apikey.js')],
-  concurrency:   ['c', 'The number of concurrent requests', 'number', 10]
-});
+var setIdValue;
+var userIdValue;
 
-cli.main(function(args, options) {
-  var api = new Flickr(options.apiKey, options.concurrency);
+program
+  .version(VERSION)
+  .arguments('<setId> <userId>')
+  .action(function(setId, userId) {
+    setIdValue = setId;
+    userIdValue = userId;
+  })
+  .option('-k, --apiKey <value>', 'The flickr api key')
+  .option('--setGlobalApiKey', 'Sets or resets a permanent apiKey')
+  .option('-c, --concurrency <n>', 'The number of concurrent requests', parseInt, 10)
+  .parse(process.argv);
+
+main();
+
+function main() {
+  var globalApiKey = getGlobalApiKey();
+
+  if (!program.apiKey && (program.setGlobalApiKey || !globalApiKey)) {
+    createGlobalApiKey();
+  } else {
+    var apiKey = program.apiKey || globalApiKey;
+    run(apiKey);
+  }
+}
+
+function run(apiKey) {
+
+  if (!setIdValue || !userIdValue) {
+    console.error('You need to pass the flickr "setId" and the "userId" as arguments');
+    process.exit(1);
+  }
+
+  var api = new Flickr(apiKey, program.concurrency);
   var numPhotos = null;
   var numDownloaded = 0;
 
@@ -31,6 +64,39 @@ cli.main(function(args, options) {
     cli.ok('All done.');
   });
 
-  api.downloadSet(args[0], args[1]);
-});
+  api.downloadSet(setIdValue, userIdValue);
+}
 
+function createGlobalApiKey() {
+  cli.info('No api key found. Do you want to set up a global apiKey?' +
+    ' Go to "https://www.flickr.com/services/apps/create/apply" to retrieve your.');
+  prompt.start();
+  prompt.get('apiKey', function(error, result) {
+    if (error) {
+      cli.error(error);
+      process.exit(1)
+    }
+
+    var apiKeyPath = saveGlobalApiKey(result.apiKey);
+    cli.info('Global api key saved into "' + apiKeyPath + '"');
+    process.exit(0);
+  });
+}
+
+function getGlobalApiKey() {
+  var homePath = process.env.HOME || process.env.USERPROFILE;
+  var apiKeyPath = homePath + '/.flickr-set-getrc';
+  if (fs.existsSync(apiKeyPath)) {
+    return fs.readFileSync(apiKeyPath, 'utf8');
+  }
+
+  return null;
+}
+
+function saveGlobalApiKey(apiKey) {
+  var homePath = process.env.HOME || process.env.USERPROFILE;
+  var apiKeyPath = homePath + '/.flickr-set-getrc';
+  fs.writeFileSync(apiKeyPath, apiKey);
+
+  return apiKeyPath;
+}
