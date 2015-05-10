@@ -6,16 +6,16 @@ var url = require('url');
 
 chai.should();
 
-describe('Flickr', function() {
+describe('Flickr', function ƒ() {
 
-  describe('#Flickr()', function() {
+  describe('#Flickr()', function ƒ() {
 
-    it('should be initialized with an apiKey', function() {
+    it('should be initialized with an apiKey', function ƒ() {
       var f = new Flickr('apiKey');
       f.apiKey.should.equal('apiKey');
     });
 
-    it('should be initialized with an optional concurrency property', function() {
+    it('should be initialized with an optional concurrency property', function ƒ() {
       var f = new Flickr('apiKey');
       f.concurrency.should.be.a('number');
       f = new Flickr('apiKey', 2);
@@ -24,7 +24,7 @@ describe('Flickr', function() {
 
   });
 
-  describe('#downloadSet()', function() {
+  describe('#downloadSet()', function ƒ() {
 
     it('should download a set');
     it('should stop on invalid setId');

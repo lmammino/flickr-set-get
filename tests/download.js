@@ -7,11 +7,11 @@ var download = require('../lib/download');
 
 chai.should();
 
-describe('download', function() {
+describe('download', function ƒ() {
 
-  describe('#download()', function() {
+  describe('#download()', function ƒ() {
 
-    it('should download a file creating a temp file', function(done) {
+    it('should download a file creating a temp file', function ƒ(done) {
       var fileContent = 'This is the file content';
       var dest = './tests/temp.txt';
       var tempDest = './tests/temp.txt.download';
@@ -30,7 +30,7 @@ describe('download', function() {
       });
 
       // Tests if the temp file has been created
-      var testHandler = function() {
+      var testHandler = function ƒ() {
         chai.assert(fs.existsSync(tempDest));
         stream.removeListener('data', testHandler);
       };
