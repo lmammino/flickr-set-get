@@ -32,9 +32,12 @@ program
     setIdValue = setId;
     userIdValue = userId;
   })
-  .option('-k, --apiKey <value>', 'The flickr api key')
-  .option('--setGlobalApiKey', 'Sets or resets a permanent apiKey')
-  .option('-c, --concurrency <n>', 'The number of concurrent requests', parseInt, 10)
+  .option('-k, --apiKey <value>', 'The flickr api key', null, null)
+  .option('--setGlobalApiKey', 'Sets or resets a permanent apiKey', null, null)
+  .option('-c, --concurrency <n>', 'The number of concurrent requests', parseInt, null)
+  .option('-o, --outputDir <s>', 'The directory where to save the downloaded images', null, null)
+  .option('-s, --size <s>', 'The size of the image to download (eg. "Original", "Large", "Medium", etc.)', null, null)
+  .option('-n, --noOverwrite', 'If set does not overwrite existing files', null, null)
   .parse(process.argv);
 
 main();
@@ -65,9 +68,18 @@ function run(apiKey) {
     process.exit(1);
   }
 
-  var api = new Flickr(apiKey, program.concurrency);
+  var options = {};
+  if (program.concurrency) options.concurrency = program.concurrency;
+  if (program.outputDir) options.outputDir = program.outputDir;
+  if (program.size) options.size = program.size;
+  if (program.noOverwrite) options.noOverwrite = program.noOverwrite;
+
+  var api = new Flickr(apiKey, options);
+
   var numPhotos = null;
+  var numProcessed = 0;
   var numDownloaded = 0;
+  var numSkipped = 0;
 
   api.on('setInfo', function onSetInfo(info) {
     cli.info('Downloading ' + info.total + ' photos from "' + info.title + '" by ' + info.ownername);
@@ -76,17 +88,24 @@ function run(apiKey) {
   });
 
   api.on('photoDownloaded', function onPhotoDownloaded() {
+    numProcessed++;
     numDownloaded++;
-    cli.progress(numDownloaded / numPhotos);
+    cli.progress(numProcessed / numPhotos);
+  });
+
+  api.on('photoSkipped', function onPhotoSkipped() {
+    numProcessed++;
+    numSkipped++;
+    cli.progress(numProcessed / numPhotos);
   });
 
   api.on('done', function onDone(results) {
-    cli.ok('All done.');
+    cli.ok('All done. ' + numDownloaded + ' photos downloaded, ' + numSkipped + ' skipped');
   });
 
   api.on('error', function onError(error) {
     cli.error(error);
-    exit(1);
+    process.exit(1);
   });
 
   api.downloadSet(setIdValue, userIdValue);
