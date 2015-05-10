@@ -25,11 +25,11 @@
   "main": "lib/Flickr.js",
   "scripts": {
     "test": "npm run-script jscs && npm run-script mocha",
-    "jscs": "./node_modules/.bin/jscs lib/ tests/",
+    "jscs": "./node_modules/.bin/jscs lib/ bin/ tests/",
     "mocha": "./node_modules/.bin/mocha tests/"
   },
   "bin": {
-    "flickr-set-get": "flickr-set-get"
+    "flickr-set-get": "bin/flickr-set-get"
   },
   "preferGlobal": true,
   "license": "MIT",
