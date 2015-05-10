@@ -11,7 +11,7 @@ var program = require('commander');
 var prompt = require('prompt');
 var cli = require('cli');
 var fs = require('fs');
-var Flickr = require('./lib/Flickr.js');
+var Flickr = require('../lib/Flickr.js');
 
 /**
  * Command line arguments
@@ -19,12 +19,15 @@ var Flickr = require('./lib/Flickr.js');
 var setIdValue;
 var userIdValue;
 
+// Fixes weird error for using the "arguments" keyword on some ides
+program.args = program['arguments'];
+
 /**
  * Command line program definition
  */
 program
   .version(VERSION)
-  .arguments('<setId> <userId>')
+  .args('<setId> <userId>')
   .action(function ƒ(setId, userId) {
     setIdValue = setId;
     userIdValue = userId;
