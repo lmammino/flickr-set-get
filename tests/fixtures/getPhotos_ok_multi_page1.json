@@ -6,7 +6,7 @@
     "ownername":"somename",
     "photo":[
       {
-        "id":"photo1_id",
+        "id":"photo1",
         "secret":"photo1_secret",
         "server":"someserver",
         "farm":9,
@@ -17,7 +17,7 @@
         "isfamily":0
       },
       {
-        "id":"photo2_id",
+        "id":"photo2",
         "secret":"photo2_secret",
         "server":"someserver",
         "farm":9,
@@ -28,7 +28,7 @@
         "isfamily":0
       },
       {
-        "id":"photo3_id",
+        "id":"photo3",
         "secret":"photo3_secret",
         "server":"someserver",
         "farm":9,
