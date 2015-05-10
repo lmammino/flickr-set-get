@@ -22,11 +22,12 @@
   "bugs": {
     "url": "https://github.com/lmammino/flickr-set-get/issues"
   },
-  "main": "lib/Flickr.js",
+  "main": "lib/Flickr",
   "scripts": {
-    "test": "npm run-script jscs && npm run-script mocha",
+    "test": "npm run-script jscs && npm run-script coverage",
     "jscs": "./node_modules/.bin/jscs lib/ bin/ tests/",
-    "mocha": "./node_modules/.bin/mocha tests/"
+    "mocha": "./node_modules/.bin/mocha tests/",
+    "coverage": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- tests/"
   },
   "bin": {
     "flickr-set-get": "bin/flickr-set-get"
@@ -45,8 +46,11 @@
   },
   "devDependencies": {
     "chai": "^2.3.0",
+    "coveralls": "^2.11.2",
+    "istanbul": "^0.3.13",
     "jscs": "^1.13.1",
     "mocha": "^2.2.4",
+    "mocha-istanbul": "^0.2.0",
     "nock": "^1.9.0"
   }
 }

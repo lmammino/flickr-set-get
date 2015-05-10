@@ -7,3 +7,5 @@ node_js:
   - "iojs-v2.0.0"
 before_install:
   - "npm update -g npm"
+after_success:
+  - "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
