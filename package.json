@@ -1,13 +1,14 @@
 {
   "name": "flickr-set-get",
   "description": "A simple command line app to download photos from a flickr set",
-  "tags": [
+  "keywords": [
     "flickr",
     "photo",
     "set",
     "download",
     "command line",
-    "cli"
+    "cli",
+    "api"
   ],
   "version": "0.0.0",
   "author": {
@@ -27,12 +28,10 @@
     "jscs": "./node_modules/.bin/jscs lib/ tests/",
     "mocha": "./node_modules/.bin/mocha tests/"
   },
-  "keywords": [
-    "flickr",
-    "api",
-    "photos",
-    "download"
-  ],
+  "bin": {
+    "flickr-set-get": "flickr-set-get"
+  },
+  "preferGlobal": true,
   "license": "MIT",
   "engines": {
     "node": ">=0.10.0"
