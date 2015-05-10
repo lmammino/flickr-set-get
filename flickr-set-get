@@ -4,15 +4,24 @@
 
 var VERSION = '0.0.0';
 
+/**
+ * Dependencies
+ */
 var program = require('commander');
 var prompt = require('prompt');
 var cli = require('cli');
 var fs = require('fs');
 var Flickr = require('./lib/Flickr.js');
 
+/**
+ * Command line arguments
+ */
 var setIdValue;
 var userIdValue;
 
+/**
+ * Command line program definition
+ */
 program
   .version(VERSION)
   .arguments('<setId> <userId>')
@@ -27,6 +36,10 @@ program
 
 main();
 
+/**
+ * Checks wheter you want/need to set a global api key for the current user or
+ * if you want to run the program
+ */
 function main() {
   var globalApiKey = getGlobalApiKey();
 
@@ -38,6 +51,10 @@ function main() {
   }
 }
 
+/**
+ * Run the program to download a flickr set
+ * @param {string} apiKey
+ */
 function run(apiKey) {
 
   if (!setIdValue || !userIdValue) {
@@ -67,6 +84,10 @@ function run(apiKey) {
   api.downloadSet(setIdValue, userIdValue);
 }
 
+/**
+ * Createsa a new global api key for the current user
+ * prompting him to insert the key
+ */
 function createGlobalApiKey() {
   cli.info('No api key found. Do you want to set up a global apiKey?' +
     ' Go to "https://www.flickr.com/services/apps/create/apply" to retrieve your.');
@@ -83,6 +104,23 @@ function createGlobalApiKey() {
   });
 }
 
+/**
+ * Saves a given api key as user api key
+ * @param {string} apiKey
+ * @returns {string}
+ */
+function saveGlobalApiKey(apiKey) {
+  var homePath = process.env.HOME || process.env.USERPROFILE;
+  var apiKeyPath = homePath + '/.flickr-set-getrc';
+  fs.writeFileSync(apiKeyPath, apiKey);
+
+  return apiKeyPath;
+}
+
+/**
+ * Retrieves a the global api key for the current user (or null if there's none)
+ * @returns {null|string}
+ */
 function getGlobalApiKey() {
   var homePath = process.env.HOME || process.env.USERPROFILE;
   var apiKeyPath = homePath + '/.flickr-set-getrc';
@@ -91,12 +129,4 @@ function getGlobalApiKey() {
   }
 
   return null;
-}
-
-function saveGlobalApiKey(apiKey) {
-  var homePath = process.env.HOME || process.env.USERPROFILE;
-  var apiKeyPath = homePath + '/.flickr-set-getrc';
-  fs.writeFileSync(apiKeyPath, apiKey);
-
-  return apiKeyPath;
 }
