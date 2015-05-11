@@ -141,7 +141,7 @@ Triggers events during the whole process
 **Returns**: `Flickr`
 
 
-##Contributing
+## Contributing
 
 Everyone is very welcome to contribute to this project. You can contribute just by submitting bugs or 
 suggesting improvements by [opening an issue on GitHub](https://github.com/lmammino/flickr-set-get/issues).
@@ -151,6 +151,6 @@ You can also submit PRs as long as you adhere with the code standards and write 
 You can read a [dedicated guide on how to contribute](CONTRIBUTING.md).
 
 
-##License
+## License
 
 Licensed under [MIT License](LICENSE). © Luciano Mammino.
