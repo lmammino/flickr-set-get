@@ -15,7 +15,7 @@ $ flickr-set-get <setid> <userid>
 ## Install
 
 As simple as installing any other global node package. Be sure to have [npm](https://www.npmjs.com) and 
-[node](https://nodejs.org/) (`>= 0.8` version, or [iojs](https://iojs.org) `>= 1.0`) installed and launch:
+[node](https://nodejs.org/) (`>= 0.8` version, or [io.js](https://iojs.org) `>= 1.0`) installed and launch:
 
 ```bash
 $ npm install -g flickr-set-get
@@ -68,7 +68,7 @@ There are few command line options available. You can have a comprehensive docum
 $ flickr-set-get --help
 ```
 
-Here follows the current available options:
+Here follows the list of the currently available options:
 
   - `-h, --help`             output usage information
   - `-V, --version`          output the version number
@@ -83,36 +83,72 @@ Here follows the current available options:
 ## Current status
 
 This project is currently on its early days so it's expected to have (a lot of) bugs and imperfections.
-Feel free to [contribute to its development](#Contributing) and to 
+Feel free to [contribute to its development](#contributing) and to 
 [report bugs](https://github.com/lmammino/flickr-set-get/issues).
 
 
 ## Programmatic API
 
-Developers can integrate part of the code into their own apps. Here's a small documentation to get you going in this
-case.
+Developers can integrate part of the code into their own apps. 
+Here's a small documentation to get you going in this case.
 
-*To be written*
+If you install the package as a dependency into an existing project (`npm install --save flickr-set-get`) you can require
+it's main module:
 
-### Flickr class
+```js
+var Flickr = require('flickr-set-get');
 
-*To be written*
+var apiKey = 'someApiKey';
+var options = {};
 
-### Methods
+var client = new Flickr(apiKey, options);
+```
 
-*To be written*
+Here follows a comprehensive documentation of the `Flickr` class.
 
-### Events
+### Class: Flickr
+A class that defines a set of methods to download an entire set of photos (`gallery` or `set`) from Flickr.
 
-*To be written*
+Available options:
+
+  - **concurrency** {number} the maximum number of concurrent http requests (default: 10)
+  - **outputDir** {string} the path where to save the images (default: ".")
+  - **size** {string} The size of the image to download (eg. "Original", "Large", "Medium", etc.)
+  - **noOverwrite** {boolean} if true avoids to override already existing files (default: false)
+
+This class extends from {EventEmitter} and emits several events:
+
+  - **error** {Error} in case of error
+  - **setInfo** {Object} when info about a given set are successfully retrieved
+  - **photoSizes** {Object} when the info about a photo (url to download the sizes) are retrieved
+  - **photoDownloaded** {Object} when a photo is successfully downloaded
+  - **photoSkipped** {Object} when a photo is skipped (already downloaded)
+  - **done** {Object} when all the photo of the set are downloaded
+
+#### Flickr.downloadSet(setId, userId) 
+
+Starts the download of the photos from a given Flickr set.
+Triggers events during the whole process
+
+**Parameters**
+
+**setId**: `string`, Starts the download of the photos from a given Flickr set.
+Triggers events during the whole process
+
+**userId**: `string`, Starts the download of the photos from a given Flickr set.
+Triggers events during the whole process
+
+**Returns**: `Flickr`
 
 
 ##Contributing
 
-Everyone is very welcome to contribute to this project. You can contribute just by submitting bugs or suggest improvements
-by [opening an issue on GitHub](https://github.com/lmammino/flickr-set-get/issues).
+Everyone is very welcome to contribute to this project. You can contribute just by submitting bugs or 
+suggesting improvements by [opening an issue on GitHub](https://github.com/lmammino/flickr-set-get/issues).
 
 You can also submit PRs as long as you adhere with the code standards and write tests for the proposed changes.
+
+You can read a [dedicated guide on how to contribute](CONTRIBUTING.md).
 
 
 ##License
