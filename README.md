@@ -9,8 +9,9 @@ Flickr-set-get is a command line application written in node that allows you to 
 photos from Flickr (a gallery). Once you have it installed, to start the download you just need to:
 
 ```bash
-$ flickr-set-get <setid> <userid>
+$ flickr-set-get get <setid> <userid>
 ```
+
 
 ## Install
 
@@ -21,32 +22,29 @@ As simple as installing any other global node package. Be sure to have [npm](htt
 $ npm install -g flickr-set-get
 ```
 
-## Usage
+
+## Configuration
 
 ![Usage screenshot](http://i.imgur.com/DGEpYtl.png)
 
-Once you have it installed you need to grab a Flickr api key. You can apply for a Flickr api key in the 
-[Flickr app garden](https://www.flickr.com/services/apps/create/apply) or you can use the default api key that I got
-to develop this [app](https://www.flickr.com/services/apps/72157651747839108/): `0f3a8354998d776fbaac7d87c55c0203` 
-(but I suggest you to grab your own one to avoid rate limiting issues).
+Flickr-set-get is already configured with a default api key to allow you to use it immediately. Anyway it's highly
+recommended to create your own Flickr api key in the [Flickr app garden](https://www.flickr.com/services/apps/create/apply)
+especially if you intend to make authenticated requests to download private photos and photo sets. Having your own api key
+will allow you to avoid rate limiting and to use a more secure authenticated communication.
 
-### Define a global api key
-
-You can specify an api key every time you launch the command with the `--apiKey` option but it's better to set a global 
-api key for your user. To do so you need to run:
+To configure flickr-set-get to use your own api key you need to launch the following command:
 
 ```bash
-$ flickr-set-get --setGlobalApiKey
+$ flickr-set-get config
 ```
 
-It will prompt you to insert your api key and it will be stored in your user directory. It will load it automatically
-from now and you don't need to specify the `--apiKey` option anymore.
+An interactive guide will then help you to complete the configuration process.
 
 
 ### Start the download
 
-Once you setup your api key you just need to have a set to download. A set is identified by two parameters: a `setId`
-and a `userId`. Given the url of a set (gallery) you can easily identify these two parameters as shown in the image below:
+At this stage you should be ready to download a Flickr photo set. A set is identified by two parameters: a `setId`
+and a `userId`. Given the url of a set (gallery) you can easily spot these two parameters as shown in the image below:
 
 ![SetId and UserId parameters in a Flickr gallery url](http://i.imgur.com/4SrUKjV.png)
 
@@ -54,30 +52,61 @@ So, given the url `https://www.flickr.com/photos/21272841@N05/sets/7215762348896
 to run: 
 
 ```bash
-$ flickr-set-get 72157623488969696 21272841@N05
+$ flickr-set-get get 72157623488969696 21272841@N05
 ```
 
 And then just watch the command to do the hard work for you!
 
+### Download private photos and sets
 
-### Options
+Flickr supports private photos and private sets (sets that contains only private photos). To be able to download these
+photos from your sets you need to authenticate yourself and to send authenticated api requests. In order to do so you
+need to do configure your authentication options and get an authentication token with the `flickr-set-get config` command.
+Then you need to use the option `--authenticated` when using the `flickr-set-get get` command.
 
-There are few command line options available. You can have a comprehensive documentation by calling:
+It's highly recommended to use your own api key and secret to achieve an optimal level of security.
+In fact the default api *secret* is shared in plain text in the code base of flickr-set-get, so it's not really *a secret*.
+Someone that might intercept a flickr-set-get authentication token for your Flickr profile (generated with the 
+default api key and api secret) will be able to download all your private photos. 
+Anyway it's not mandatory to provide personal api key and api secret and you can use the default values, 
+especially if you just want to quick test the application to download some photos (ensure to be in a safe network in 
+that case, and to revoke your authentication token at the end of the test).
+
+
+### Sub-commands, options and help
+
+Flickr set get supports different sub-commands. You can access a comprehensive documentation with:
 
 ```bash
 $ flickr-set-get --help
 ```
 
-Here follows the list of the currently available options:
+This will display all the available sub-commands and options. You can also access the specific help of a sub-command
+with:
 
-  - `-h, --help`             output usage information
-  - `-V, --version`          output the version number
-  - `-k, --apiKey <value>`   The flickr api key
-  - `--setGlobalApiKey`      Sets or resets a permanent apiKey
-  - `-c, --concurrency <n>`  The number of concurrent requests
-  - `-o, --outputDir <s>`    The directory where to save the downloaded images
-  - `-s, --size <s>`         The size of the image to download (eg. "Original", "Large", "Medium", etc.)
-  - `-n, --noOverwrite`      If set does not overwrite existing files
+```bash
+$ flickr-set-get <sub-command> --help
+```
+
+For example `flickr-set-get get --help` will show:
+
+```
+  Usage: get|g [options] <setId> <userId>
+
+  download a set of photos
+
+  Options:
+
+    -h, --help             output usage information
+    --apiKey <value>       The flickr API key
+    --authToken <value>    The flickr auth token
+    --authenticated        Use authenticate request to access private photos (ensure to provide a valid `authToken` as option or in your config file)
+    --config <value>       Define the config file to use
+    -c, --concurrency <n>  The number of concurrent requests
+    -o, --outputDir <s>    The directory where to save the downloaded images
+    -s, --size <s>         The size of the image to download (eg. "Original", "Large", "Medium", etc.)
+    -n, --noOverwrite      If set does not overwrite existing files
+```
 
 
 ## Current status
@@ -89,8 +118,8 @@ Feel free to [contribute to its development](#contributing) and to
 
 ## Programmatic API
 
-Developers can integrate part of the code into their own apps. 
-Here's a small documentation to get you going in this case.
+Developers can integrate part of the code into their own apps (want to build a GUI for this command line app? :P) 
+Here's a small documentation to get you going in these cases.
 
 If you install the package as a dependency into an existing project (`npm install --save flickr-set-get`) you can require
 it's main module:
@@ -106,6 +135,7 @@ var client = new Flickr(apiKey, options);
 
 Here follows a comprehensive documentation of the `Flickr` class.
 
+
 ### Class: Flickr
 A class that defines a set of methods to download an entire set of photos (`gallery` or `set`) from Flickr.
 
@@ -113,8 +143,9 @@ Available options:
 
   - **concurrency** `number` the maximum number of concurrent http requests (default: `10`)
   - **outputDir** `string` the path where to save the images (default: `"."`)
-  - **size** `string` The size of the image to download, eg. "Original", "Large", "Medium", etc. (default `"Original"`)
-  - **noOverwrite** `boolean` if true avoids to override already existing files (default: `false`)
+  - **size** `string` The size of the image to download, eg. `"Original"`, `"Large"`, `"Medium"`, etc. (default `"Original"`)
+  - **noOverwrite** `boolean` if `true` avoids to override already existing files (default: `false`)
+  - **auth** `boolean|object` if `false` it will not use authentication. Otherwise it should be an object containing the keys `secret` and  `authToken` (or `miniToken`) (default: false)
 
 This class extends from {EventEmitter} and emits several events:
 
@@ -124,6 +155,7 @@ This class extends from {EventEmitter} and emits several events:
   - **photoDownloaded** `Object` when a photo is successfully downloaded
   - **photoSkipped** `Object` when a photo is skipped (already downloaded)
   - **done** `Object` when all the photo of the set are downloaded
+
 
 #### Flickr.downloadSet(setId, userId) 
 
@@ -137,6 +169,17 @@ Triggers events during the whole process
 
 **userId**: `string`, Starts the download of the photos from a given Flickr set.
 Triggers events during the whole process
+
+**Returns**: `Flickr`
+
+
+#### Flickr.getAuthToken(cb)
+
+Get the authToken. Requires that the `auth` option has been correctly configured providing `secret` and `miniToken`
+   
+**Parameters**
+
+**cb**: `function`, a callback function that gets called (with `error` and `data` arguments) once the request is finished
 
 **Returns**: `Flickr`
 

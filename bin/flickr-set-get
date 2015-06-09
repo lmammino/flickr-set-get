@@ -2,8 +2,6 @@
 
 'use strict';
 
-var VERSION = '1.0.0';
-
 /**
  * Dependencies
  */
@@ -11,71 +9,112 @@ var program = require('commander');
 var prompt = require('prompt');
 var cli = require('cli');
 var fs = require('fs');
-var Flickr = require('../lib/Flickr.js');
-
-/**
- * Command line arguments
- */
-var setIdValue;
-var userIdValue;
+var ConfigManager = require('../lib/ConfigManager');
+var Flickr = require('../lib/Flickr');
+var pkg = require('../package');
 
 // Solves occasional UNABLE_TO_VERIFY_LEAF_SIGNATURE error
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
 
-// Fixes weird error for using the "arguments" keyword on some ides
+// Fixes weird error for using the "arguments" keyword on some IDEs
 program.args = program['arguments'];
 
+var defaultConfigPath = (process.env.HOME || process.env.USERPROFILE) + '/.flickr-set-getrc';
+
 /**
- * Command line program definition
+ * Command line program commands definition
  */
 program
-  .version(VERSION)
-  .args('<setId> <userId>')
-  .action(function ƒ(setId, userId) {
-    setIdValue = setId;
-    userIdValue = userId;
+  .version(pkg.version)
+;
+
+/**
+ * Configure command
+ */
+program
+  .command('configure')
+  .alias('config')
+  .description('configure apiKey and authentication')
+  .option('--file <value>', 'Define the config file to use', null, defaultConfigPath)
+  .option('--noAuthentication', 'will not configure authentication (only API Key)', null, true)
+  .action(function action(options) {
+    config(options.file || defaultConfigPath, !options.noAuthentication);
   })
-  .option('-k, --apiKey <value>', 'The flickr api key', null, null)
-  .option('--setGlobalApiKey', 'Sets or resets a permanent apiKey', null, null)
+;
+
+/**
+ * Get command
+ */
+program
+  .command('get <setId> <userId>')
+  .alias('g')
+  .description('download a set of photos')
+  .option('--apiKey <value>', 'The flickr API key', null, null)
+  .option('--authToken <value>', 'The flickr auth token', null, null)
+  .option('--authenticated', 'Use authenticate request to access private photos (ensure to provide a valid ' +
+                             '`authToken` as option or in your config file)', null, false)
+  .option('--config <value>', 'Define the config file to use', null, defaultConfigPath)
   .option('-c, --concurrency <n>', 'The number of concurrent requests', parseInt, null)
   .option('-o, --outputDir <s>', 'The directory where to save the downloaded images', null, null)
   .option('-s, --size <s>', 'The size of the image to download (eg. "Original", "Large", "Medium", etc.)', null, null)
   .option('-n, --noOverwrite', 'If set does not overwrite existing files', null, null)
-  .parse(process.argv);
-
-main();
-
-/**
- * Checks wheter you want/need to set a global api key for the current user or
- * if you want to run the program
- */
-function main() {
-  var globalApiKey = getGlobalApiKey();
-
-  if (!program.apiKey && (program.setGlobalApiKey || !globalApiKey)) {
-    createGlobalApiKey();
-  } else {
-    var apiKey = program.apiKey || globalApiKey;
-    run(apiKey);
-  }
-}
+  .action(function action(setId, userId, options) {
+    getSet(setId, userId, options);
+  })
+;
 
 /**
- * Run the program to download a flickr set
- * @param {string} apiKey
+ * Catch invalid commands and show help message
+ * (if the command is `help` it is not considered an invalid command)
  */
-function run(apiKey) {
+program
+  .command('*')
+  .description('')
+  .action(function(command){
+    if(command !== 'help') {
+      cli.error('Invalid command "' + command + '"');
+    }
+    program.outputHelp();
+    process.exit(command === 'help' ? 0 : 1)
+  })
+;
 
-  if (!setIdValue || !userIdValue) {
+/**
+ * Downloads a flickr set
+ * @param {string} setId
+ * @param {string} userId
+ * @param {object} commandOptions
+ */
+function getSet(setId, userId, commandOptions) {
+
+  if( !setId || !userId) {
     console.error('You need to pass the flickr "setId" and the "userId" as arguments');
     process.exit(1);
   }
 
   var options = {};
-  if (program.concurrency) options.concurrency = program.concurrency;
-  if (program.outputDir) options.outputDir = program.outputDir;
-  if (program.size) options.size = program.size;
-  if (program.noOverwrite) options.noOverwrite = program.noOverwrite;
+  if (commandOptions.concurrency) options.concurrency = commandOptions.concurrency;
+  if (commandOptions.outputDir) options.outputDir = commandOptions.outputDir;
+  if (commandOptions.size) options.size = commandOptions.size;
+  if (commandOptions.noOverwrite) options.noOverwrite = commandOptions.noOverwrite;
+
+  var configFile = commandOptions.config || defaultConfigPath;
+  var configManager = new ConfigManager(configFile);
+
+  var apiKey = commandOptions.apiKey || configManager.options.apiKey;
+
+  if (commandOptions.authenticated) {
+    if (!configManager.options.secret || !configManager.options.authToken) {
+      cli.error('Invalid configuration to make authenticated requests. You need to create a valid config file with' +
+        ' the command `flickr-set-get config`');
+      process.exit(1);
+    }
+
+    options.auth = {
+      secret : configManager.options.secret,
+      authToken : configManager.options.authToken
+    }
+  }
 
   var api = new Flickr(apiKey, options);
 
@@ -111,52 +150,106 @@ function run(apiKey) {
     process.exit(1);
   });
 
-  api.downloadSet(setIdValue, userIdValue);
+  api.downloadSet(setId, userId);
 }
 
 /**
- * Createsa a new global api key for the current user
- * prompting him to insert the key
+ * Guided configuration
+ * @param {string} configFile the file where to store the config
+ * @param {bool} authenticate a flag that indicates whether to authenticate the user or not
  */
-function createGlobalApiKey() {
-  cli.info('No api key found. Do you want to set up a global apiKey?' +
-    ' Go to "https://www.flickr.com/services/apps/create/apply" to retrieve your.');
+function config(configFile, authenticate) {
+
+  console.log('\nThis procedure will guide you through the configuration of the flickr-set-get command line app.\n' +
+          'It will suggest to use the default app configuration parameters, but it\'s highly recommended to ' +
+          'generate a new app on the Flickr app garden especially if you want ' +
+          'to use authenticated requests.\nThe usage of the default apiKey and secret will result in an insecure data' +
+          ' transmission and can eventually lead to data theft!' +
+          '\n\nTo get a new apiKey visit https://www.flickr.com/services/apps/create/apply/\n\n');
+
+  var configManager = new ConfigManager(configFile);
+  var schema = {
+    properties: {
+      apiKey: {
+        type: 'string',
+        required: true,
+        pattern: /^[0-9a-f]{32}$/,
+        default: configManager.options.apiKey
+      },
+      secret: {
+        type: 'string',
+        required: true,
+        pattern: /^[0-9a-f]+$/,
+        default: configManager.options.secret
+      },
+      authUrl: {
+        type: 'string',
+        required: true,
+        pattern: /^https:\/\/www.flickr.com\/auth-([0-9]+)$/,
+        default: configManager.options.authUrl
+      }
+    }
+  };
+
   prompt.start();
-  prompt.get('apiKey', function onPrompt(error, result) {
+  prompt.get(schema, function onPrompt(error, result) {
     if (error) {
       cli.error(error);
       process.exit(1)
     }
 
-    var apiKeyPath = saveGlobalApiKey(result.apiKey);
-    cli.info('Global api key saved into "' + apiKeyPath + '"');
-    process.exit(0);
+    configManager.options.apiKey = result.apiKey;
+    configManager.options.secret = result.secret;
+    configManager.options.authUrl = result.authUrl;
+
+    if (authenticate) {
+      console.log('\nNow you need to visit ' + result.authUrl + ' and, login to Flickr and get your ' +
+                  '9 digits authorization code.\n');
+
+      var miniTokenSchema = {
+        properties: {
+          miniToken: {
+            type: 'string',
+            required: true,
+            pattern: /^\d{3}\-\d{3}\-\d{3}$/
+          }
+        }
+      };
+
+      prompt.get(miniTokenSchema, function onPrompt(error, result) {
+        if (error) {
+          cli.error(error);
+          process.exit(1)
+        }
+
+        var flickr = new Flickr(configManager.options.apiKey, {
+          auth : {
+            secret : configManager.options.secret,
+            miniToken : result.miniToken
+          }
+        });
+
+        flickr.getAuthToken(function(error, data){
+
+          if (error) {
+            cli.error(error);
+            process.exit(1)
+          }
+
+          configManager.options.authToken = data.auth.token._content;
+          configManager.save();
+
+          console.log('\n\nSuccessfully authenticated as ' + data.auth.user.username + ' (' + data.auth.user.nsid + ')');
+
+        });
+
+      });
+
+    } else {
+      configManager.save();
+    }
   });
+
 }
 
-/**
- * Saves a given api key as user api key
- * @param {string} apiKey
- * @returns {string}
- */
-function saveGlobalApiKey(apiKey) {
-  var homePath = process.env.HOME || process.env.USERPROFILE;
-  var apiKeyPath = homePath + '/.flickr-set-getrc';
-  fs.writeFileSync(apiKeyPath, apiKey);
-
-  return apiKeyPath;
-}
-
-/**
- * Retrieves a the global api key for the current user (or null if there's none)
- * @returns {null|string}
- */
-function getGlobalApiKey() {
-  var homePath = process.env.HOME || process.env.USERPROFILE;
-  var apiKeyPath = homePath + '/.flickr-set-getrc';
-  if (fs.existsSync(apiKeyPath)) {
-    return fs.readFileSync(apiKeyPath, 'utf8');
-  }
-
-  return null;
-}
+program.parse(process.argv);
