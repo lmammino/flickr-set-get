@@ -13,14 +13,14 @@ describe('Flickr', function ƒ() {
 
     it('should be initialized with an apiKey', function ƒ() {
       var f = new Flickr('apiKey');
-      f.apiKey.should.equal('apiKey');
+      f.apiKey.should.be.equal('apiKey');
     });
 
     it('should be initialized with an optional set of options', function ƒ() {
       var f = new Flickr('apiKey');
       f.options.should.be.a('object');
       f = new Flickr('apiKey', {foo:'bar'});
-      f.options.foo.should.equal('bar');
+      f.options.foo.should.be.equal('bar');
     });
 
   });

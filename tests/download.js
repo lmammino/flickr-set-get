@@ -25,7 +25,7 @@ describe('download', function ƒ() {
         // tests whether the file has been correctly renamed and has the correct content
         chai.assert(fs.existsSync(dest));
         var content = fs.readFileSync(dest, {encoding:'utf8'});
-        content.should.equal(fileContent);
+        content.should.be.equal(fileContent);
         fs.unlink(dest, done);
       });
 

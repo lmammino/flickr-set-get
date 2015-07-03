@@ -18,7 +18,7 @@ describe('signature', function ƒ() {
 
     it('should generate a valid signature for an AuthToken request', function ƒ() {
       var expected = 'fddd34ac63af89b1b73b144aef8ef3d5';
-      signature.forAuthToken(apiKey, secret, miniToken).should.equal(expected);
+      signature.forAuthToken(apiKey, secret, miniToken).should.be.equal(expected);
     });
 
     it('should accept an optional set of additional parameters', function ƒ() {
@@ -28,7 +28,7 @@ describe('signature', function ƒ() {
       };
 
       var expected = '5865d12efd79dfc031e32e9106a7e307';
-      signature.forAuthToken(apiKey, secret, miniToken, params).should.equal(expected);
+      signature.forAuthToken(apiKey, secret, miniToken, params).should.be.equal(expected);
     });
 
   });
@@ -40,7 +40,7 @@ describe('signature', function ƒ() {
 
     it('should generate a valid signature for an API method call', function ƒ() {
       var expected = '09f16d79f53bc24f440149af875cdf9d';
-      signature.forApiCall(apiKey, secret, authToken, method).should.equal(expected);
+      signature.forApiCall(apiKey, secret, authToken, method).should.be.equal(expected);
     });
 
     it('should accept an optional set of additional parameters', function ƒ() {
@@ -50,7 +50,7 @@ describe('signature', function ƒ() {
       };
 
       var expected = 'e699e0d612d35b025dcec54a38fbae24';
-      signature.forApiCall(apiKey, secret, authToken, method, params).should.equal(expected);
+      signature.forApiCall(apiKey, secret, authToken, method, params).should.be.equal(expected);
     });
 
   });
