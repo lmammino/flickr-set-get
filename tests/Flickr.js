@@ -175,7 +175,7 @@ describe('Flickr', function ƒ() {
     it('should raise an error if a given size does not exists', function ƒ(done) {
       var f = new Flickr('apiKey', {concurrency: 1, outputDir: 'temp', size: 'Wrong size'});
 
-      f.on('error', function onError(error) {
+      f.on('warning', function onWarning(error) {
         rmDirSyncIfExists('temp');
         if (error.message.match(/Size "Wrong size" not available/)) {
           done();
