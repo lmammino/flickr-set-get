@@ -122,6 +122,7 @@ function getSet(setId, userId, commandOptions) {
   var numProcessed = 0;
   var numDownloaded = 0;
   var numSkipped = 0;
+  var numWarnings = 0;
 
   api.on('setInfo', function onSetInfo(info) {
     cli.info('Downloading ' + info.total + ' photos from "' + info.title + '" by ' + info.ownername);
@@ -142,9 +143,13 @@ function getSet(setId, userId, commandOptions) {
   });
 
   api.on('done', function onDone(results) {
-    cli.ok('All done. ' + numDownloaded + ' photos downloaded, ' + numSkipped + ' skipped');
+    cli.ok('All done. ' + numDownloaded + ' photos downloaded, ' + numSkipped + ' skipped, ' + numWarnings + ' warnings');
   });
 
+  api.on('warning', function onWarning(error) {
+    numWarnings++;
+    cli.error(error);
+  });
   api.on('error', function onError(error) {
     cli.error(error);
     process.exit(1);
