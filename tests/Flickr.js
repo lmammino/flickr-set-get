@@ -74,9 +74,20 @@ describe('Flickr', function ƒ() {
       f.on('done', function onDone() {
         var ok = true;
 
+        // Photos.
         for (var i = 1; i < 6; i++) {
           var path = 'temp/photo' + i + '.jpg';
           if (fs.readFileSync(path, 'utf8') !== 'This is a photo') {
+            ok = false;
+          }
+
+          fs.unlinkSync(path);
+        }
+
+        // Videos.
+        for (var i = 1; i < 2; i++) {
+          var path = 'temp/video' + i + '.mp4';
+          if (fs.readFileSync(path, 'utf8') !== 'This is a video') {
             ok = false;
           }
 
@@ -104,10 +115,22 @@ describe('Flickr', function ƒ() {
         .reply(200, fs.readFileSync('./tests/fixtures/getSizes_ok.json', 'utf8'))
       ;
 
+      // Size response for the video.
+      nock('https://api.flickr.com')
+        .filteringPath(/photo_id=[^&]*/g, 'photo_id=XXX')
+        .get('/services/rest?photo_id=XXX&nojsoncallback=1&format=json' +
+          '&api_key=apiKey&method=flickr.photos.getSizes')
+        .reply(200, fs.readFileSync('./tests/fixtures/getSizes_video_ok.json', 'utf8'))
+      ;
+
       nock('https://farm9.staticflickr.com')
         .get('/1234/12345678910_2a37e1c3ac_o.jpg')
         .times(5)
         .reply(200, 'This is a photo')
+      ;
+      nock('https://farm9.staticflickr.com')
+        .get('/1234/12345678910_2a37e1c3ac_vo.mp4')
+        .reply(200, 'This is a video')
       ;
 
       f.downloadSet('someSet', 'someUser');
@@ -124,9 +147,20 @@ describe('Flickr', function ƒ() {
       f.on('done', function onDone() {
         var ok = true;
 
+        // Photos.
         for (var i = 1; i < 6; i++) {
           var path = 'temp/photo' + i + '.jpg';
           if (fs.readFileSync(path, 'utf8') !== 'This is a photo') {
+            ok = false;
+          }
+
+          fs.unlinkSync(path);
+        }
+
+        // Videos.
+        for (var i = 1; i < 2; i++) {
+          var path = 'temp/video' + i + '.mp4';
+          if (fs.readFileSync(path, 'utf8') !== 'This is a video') {
             ok = false;
           }
 
@@ -160,10 +194,22 @@ describe('Flickr', function ƒ() {
         .reply(200, fs.readFileSync('./tests/fixtures/getSizes_ok.json', 'utf8'))
       ;
 
+      // Size response for the video.
+      nock('https://api.flickr.com')
+        .filteringPath(/photo_id=[^&]*/g, 'photo_id=XXX')
+        .get('/services/rest?photo_id=XXX&nojsoncallback=1&format=json' +
+          '&api_key=apiKey&method=flickr.photos.getSizes')
+        .reply(200, fs.readFileSync('./tests/fixtures/getSizes_video_ok.json', 'utf8'))
+      ;
+
       nock('https://farm9.staticflickr.com')
         .get('/1234/12345678910_2a37e1c3ac_o.jpg')
         .times(5)
         .reply(200, 'This is a photo')
+      ;
+      nock('https://farm9.staticflickr.com')
+        .get('/1234/12345678910_2a37e1c3ac_vo.mp4')
+        .reply(200, 'This is a video')
       ;
 
       f.downloadSet('someSet', 'someUser');
@@ -218,11 +264,27 @@ describe('Flickr', function ƒ() {
         fs.writeFileSync(path, 'Not overwritten');
       }
 
+      for (var i = 1; i < 2; i++) {
+        var path = 'temp/video' + i + '.mp4';
+        fs.writeFileSync(path, 'Not overwritten');
+      }
+
       f.on('done', function onDone() {
         var ok = true;
 
+        // Photos.
         for (var i = 1; i < 6; i++) {
           var path = 'temp/photo' + i + '.jpg';
+          if (fs.readFileSync(path, 'utf8') !== 'Not overwritten') {
+            ok = false;
+          }
+
+          fs.unlinkSync(path);
+        }
+
+        // Videos.
+        for (var i = 1; i < 2; i++) {
+          var path = 'temp/video' + i + '.mp4';
           if (fs.readFileSync(path, 'utf8') !== 'Not overwritten') {
             ok = false;
           }
@@ -251,10 +313,22 @@ describe('Flickr', function ƒ() {
         .reply(200, fs.readFileSync('./tests/fixtures/getSizes_ok.json', 'utf8'))
       ;
 
+      // Size response for the video.
+      nock('https://api.flickr.com')
+        .filteringPath(/photo_id=[^&]*/g, 'photo_id=XXX')
+        .get('/services/rest?photo_id=XXX&nojsoncallback=1&format=json' +
+          '&api_key=apiKey&method=flickr.photos.getSizes')
+        .reply(200, fs.readFileSync('./tests/fixtures/getSizes_video_ok.json', 'utf8'))
+      ;
+
       nock('https://farm9.staticflickr.com')
         .get('/1234/12345678910_2a37e1c3ac_o.jpg')
         .times(5)
         .reply(200, 'This is a photo')
+      ;
+      nock('https://farm9.staticflickr.com')
+        .get('/1234/12345678910_2a37e1c3ac_vo.mp4')
+        .reply(200, 'This is a video')
       ;
 
       f.downloadSet('someSet', 'someUser');
