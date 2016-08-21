@@ -1,4 +1,6 @@
 1.1.3
+-----
+
   - Updated dev dependencies ([loige](https://github.com/lmammino/flickr-set-get/pull/37))
   - Update dependencies to solve security warnings ([loige](https://github.com/lmammino/flickr-set-get/pull/36))
 
