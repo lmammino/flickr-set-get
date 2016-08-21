@@ -49,8 +49,8 @@
     "chai": "^2.3.0",
     "coveralls": "^2.11.2",
     "istanbul": "^0.3.13",
-    "jscs": "^1.13.1",
-    "mocha": "^2.2.4",
+    "jscs": "^3.0.7",
+    "mocha": "^3.0.2",
     "mocha-istanbul": "^0.2.0",
     "mock-fs": "^3.11.0",
     "nock": "^1.9.0"
