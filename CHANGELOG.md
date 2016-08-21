@@ -1,3 +1,11 @@
+1.1.3
+  - Update dependencies to solve security warnings ([loige](https://github.com/lmammino/flickr-set-get/pull/35))
+
+1.1.2
+-----
+
+  - Added support for downloading videos ([saemy](https://github.com/lmammino/flickr-set-get/pull/34))
+
 1.1.1
 -----
 
