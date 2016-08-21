@@ -1,5 +1,10 @@
 {
   "preset": "airbnb",
   "requireCamelCaseOrUpperCaseIdentifiers": "ignoreProperties",
-  "disallowAnonymousFunctions": true
+  "disallowAnonymousFunctions": true,
+  "requireTrailingComma": false,
+  "requireSpaceBeforeObjectValues": false,
+  "requireSpacesInsideObjectBrackets": false,
+  "maximumLineLength": false,
+  "disallowMultipleLineStrings": false
 }
