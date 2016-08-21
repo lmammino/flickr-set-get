@@ -26,13 +26,24 @@
         "ispublic":1,
         "isfriend":0,
         "isfamily":0
+      },
+      {
+        "id":"video1",
+        "secret":"video1_secret",
+        "server":"someserver",
+        "farm":9,
+        "title":"video1",
+        "isprimary":"0",
+        "ispublic":1,
+        "isfriend":0,
+        "isfamily":0
       }
     ],
     "page":"2",
     "per_page":3,
     "perpage":3,
     "pages":2,
-    "total":"5",
+    "total":"6",
     "title":"Example set"
   },
   "stat":"ok"

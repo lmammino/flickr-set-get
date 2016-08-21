@@ -57,6 +57,7 @@ program
   .option('-c, --concurrency <n>', 'The number of concurrent requests', parseInt, null)
   .option('-o, --outputDir <s>', 'The directory where to save the downloaded images', null, null)
   .option('-s, --size <s>', 'The size of the image to download (eg. "Original", "Large", "Medium", etc.)', null, null)
+  .option('-vs, --videoSize <s>', 'The size of the video to download (eg. "Video Original", "HD MP4", "Mobile MP4", etc.)', null, null)
   .option('-n, --noOverwrite', 'If set does not overwrite existing files', null, null)
   .action(function action(setId, userId, options) {
     getSet(setId, userId, options);
