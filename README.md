@@ -105,6 +105,7 @@ For example `flickr-set-get get --help` will show:
     -c, --concurrency <n>  The number of concurrent requests
     -o, --outputDir <s>    The directory where to save the downloaded images
     -s, --size <s>         The size of the image to download (eg. "Original", "Large", "Medium", etc.)
+    -vs, --videoSize <s>   The size of the video to download (eg. "Video Original", "HD MP4", "Mobile MP4", etc.)
     -n, --noOverwrite      If set does not overwrite existing files
 ```
 
